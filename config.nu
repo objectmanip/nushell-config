@@ -20,8 +20,8 @@ let in_python_venv = false
 let default_git_push_string = "pushed via nushell command [skip ci]"
 let default_git_push_increment_string = "pushed via nushell command"
 let default_git_merge_string = "merged via nushell command [skip ci]"
-def mount-obelix [] {
-    sudo mount -t cifs -o $"username=($env.OBELIX_USER)" $env.OBELIX_URL $env.OBELIX_MOUNTPOINT
+def mount-storage [] {
+    sudo mount -t cifs -o $"username=($env.STORAGE_USER)" $env.STORAGE_URL $env.STORAGE_MOUNTPOINT
 }
 
 # DEFINE LINE LEFT SIDE
@@ -127,7 +127,7 @@ def --env appdata [] {
 def --env vpn_toggle [] {
     let ovpn_state = nmcli connection show --active # | grep BEZ-VPN
     # print-info $"OVPN-State: ($ovpn_state)"
-    if ($ovpn_state | str contains "BEZ-VPN") {
+    if ($ovpn_state | str contains $env.WORK_VPN) {
         print-info "Turning of openvpn, activating tailscale"
         vpn_tailscale
     } else {
@@ -138,18 +138,18 @@ def --env vpn_toggle [] {
 
 def --env vpn_off [] {
     print-info "Turning off all VPN connections"
-    nmcli connection down id "BEZ-VPN" | complete
+    nmcli connection down id $env.WORK_VPN | complete
     sudo tailscale down | complete
 }
 
 def --env vpn_tailscale [] {
-    nmcli connection down id "BEZ-VPN" | complete
+    nmcli connection down id $env.WORK_VPN | complete
     sudo tailscale up --accept-dns=true --accept-routes | complete
 }
 
 def --env vpn_openvpn [] {
     sudo tailscale down | complete
-    nmcli connection up id "BEZ-VPN" | complete
+    nmcli connection up id $env.WORK_VPN | complete
 }
 
 # def --env go_obsidian [] {
