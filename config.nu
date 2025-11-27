@@ -21,7 +21,7 @@ let default_git_push_string = "pushed via nushell command [skip ci]"
 let default_git_push_increment_string = "pushed via nushell command"
 let default_git_merge_string = "merged via nushell command [skip ci]"
 def mount-storage [] {
-    sudo mount -t cifs -o $"username=($env.STORAGE_USER)" $env.STORAGE_URL $env.STORAGE_MOUNTPOINT
+    sudo mount -t cifs -o $"username=($env.STORAGE_USER),password=($env.STORAGE_PASS)" $env.STORAGE_URL $env.STORAGE_MOUNTPOINT
 }
 
 # DEFINE LINE LEFT SIDE
@@ -101,8 +101,8 @@ def set-path [] {
         $env.MAC.PATHS
     } else if ($hostname | str contains $env.SINA.NAME) {
         $env.SINA.PATHS
-    } else if ($hostname | str contains $env.WINDOWS.NAME) {
-        $env.WINDOWS.PATHS
+    } else if ($hostname | str contains $env.TUXEDO.NAME) {
+        $env.TUXEDO.PATHS
     }
 }
 
@@ -331,7 +331,7 @@ def --env push_repositories [directory: path = "./", remote: string = "origin", 
 
 def --env nupull [remote: string = "origin", branch: string = "default"] {
     let original_dir = (pwd)
-    go_nuconfig
+    cd $paths.nuconfig
     let current_branch = git_get_branch $branch
     print-info-git "Pulling nushell configuration"
     # print-warning "Stashing local changes"
@@ -343,7 +343,7 @@ def --env nupull [remote: string = "origin", branch: string = "default"] {
 
 def --env nupush [remote: string = "origin", branch: string = "default"] {
     let original_dir = (pwd)
-    go_nuconfig
+    cd $paths.nuconfig
     let current_branch = git_get_branch $branch
     print-header-git "Pushing nushell configuration"
     gitmerge $remote $current_branch
@@ -362,7 +362,7 @@ def --env nv [key: string = obsidian] {
 
 def --env nvimpull [remote: string = "origin", branch: string = "default"] {
     let original_dir = (pwd)
-    go_nvimconfig
+    cd $paths.nvimconfig
     let current_branch = git_get_branch $branch
     print-info-git "Pulling neovim configuration"
     # print-warning "Stashing local changes"
@@ -374,7 +374,7 @@ def --env nvimpull [remote: string = "origin", branch: string = "default"] {
 
 def --env nvimpush [remote: string = "origin", branch: string = "default"] {
     let original_dir = (pwd)
-    go_nvimconfig
+    cd $paths.nvimconfig
     let current_branch = git_get_branch $branch
     # print-info "Pulling remote to merge"
     # git pull $remote $branch
@@ -386,7 +386,7 @@ def --env nvimpush [remote: string = "origin", branch: string = "default"] {
 
 def --env nvimconfig [] {
     let original_dir = (pwd)
-    go_nvimconfig
+    cd $paths.nvimconfig
     nvim
     cd $original_dir
 }
