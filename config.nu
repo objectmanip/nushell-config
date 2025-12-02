@@ -274,6 +274,7 @@ def --env workpush [remote: string = "origin", branch: string = "default", comme
     let comment = if $comment == "" { $default_git_push_string } else { $comment }
     print-warning "Pushing all repositories in list \"work_repositories\""
     push_repositories $paths.repositories_work $remote $branch $comment
+    push_repositories $paths.repositories_work gitlab dev $comment
 }
 
 def repopull [remote: string = "origin", branch: string = "default", comment: string = ""] {
