@@ -3,8 +3,6 @@
 # Installed by:
 # version = "0.104.0"
 
-source ~/.config/nushell/env.nu # for easier paths on mac
-
 $env.config.buffer_editor = "nvim"
 $env.config.show_banner = false
 $env.use_ansi_coloring = false
