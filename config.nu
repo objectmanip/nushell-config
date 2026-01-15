@@ -21,6 +21,10 @@ let default_git_push_string = "pushed via nushell command [skip ci]"
 let default_git_push_increment_string = "pushed via nushell command"
 let default_git_merge_string = "merged via nushell command [skip ci]"
 def mount-storage [] {
+    vpn_openvpn
+    do -i {
+        sudo umount -l -f $"($env.STORAGE_MOUNTPOINT)"
+    }
     sudo mount -t cifs -o $"username=($env.STORAGE_USER),password=($env.STORAGE_PASS)" $env.STORAGE_URL $env.STORAGE_MOUNTPOINT
 }
 
@@ -87,6 +91,7 @@ def push_everything [] {
 }
 
 def pull_everything [] {
+    vpn_tailscale
     nupull
     nvimpull
     dotpull
@@ -192,8 +197,14 @@ def --env gitpush_work [] {
         gitpush "gitlab" "dev"
     }
     do -i {
+        vpn_tailscale
         gitpush
     }
+}
+
+def --env gitpush_priv [] {
+    vpn_tailscale
+    gitpush
 }
 
 def --env gitpush [remote: string = "origin", branch: string = "default", comment: string = ""] {
@@ -271,6 +282,9 @@ def repopush [remote: string = "origin", branch: string = "default", comment: st
 }
 
 def --env workpush [remote: string = "origin", branch: string = "default", comment: string = ""] {
+    if ($hostsystem | str contains Linux ) {
+        vpn_tailscale
+    }
     let comment = if $comment == "" { $default_git_push_string } else { $comment }
     print-warning "Pushing all repositories in list \"work_repositories\""
     push_repositories $paths.repositories_work $remote $branch $comment
@@ -331,6 +345,7 @@ def --env push_repositories [directory: path = "./", remote: string = "origin", 
 }
 
 def --env nupull [remote: string = "origin", branch: string = "default"] {
+    vpn_tailscale
     let original_dir = (pwd)
     cd $paths.nuconfig
     let current_branch = git_get_branch $branch
@@ -343,6 +358,7 @@ def --env nupull [remote: string = "origin", branch: string = "default"] {
 }
 
 def --env nupush [remote: string = "origin", branch: string = "default"] {
+    vpn_tailscale
     let original_dir = (pwd)
     cd $paths.nuconfig
     let current_branch = git_get_branch $branch
@@ -362,6 +378,7 @@ def --env nv [key: string = obsidian] {
 }
 
 def --env nvimpull [remote: string = "origin", branch: string = "default"] {
+    vpn_tailscale
     let original_dir = (pwd)
     cd $paths.nvimconfig
     let current_branch = git_get_branch $branch
@@ -374,6 +391,7 @@ def --env nvimpull [remote: string = "origin", branch: string = "default"] {
 }
 
 def --env nvimpush [remote: string = "origin", branch: string = "default"] {
+    vpn_tailscale
     let original_dir = (pwd)
     cd $paths.nvimconfig
     let current_branch = git_get_branch $branch
@@ -464,6 +482,7 @@ def init-repo [dir?: path, lang: string = "python", create_venv: bool = false] {
 }
 
 def --env dotpush [] {
+    vpn_tailscale
     do -i { nvimpush }
     do -i { nupush }
     do -i {
@@ -475,6 +494,7 @@ def --env dotpush [] {
 }
 
 def --env dotpull [] {
+    vpn_tailscale
     do -i { nvimpull }
     do -i { nupull }
     do -i {
