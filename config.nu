@@ -148,13 +148,17 @@ def --env vpn_off [] {
 }
 
 def --env vpn_tailscale [] {
-    nmcli connection down id $env.WORK_VPN | complete
-    sudo tailscale up --accept-dns=true --accept-routes | complete
+    do -i {
+        nmcli connection down id $env.WORK_VPN | complete
+        sudo tailscale up --accept-dns=true --accept-routes | complete
+    }
 }
 
 def --env vpn_openvpn [] {
-    sudo tailscale down | complete
-    nmcli connection up id $env.WORK_VPN | complete
+    {
+        sudo tailscale down | complete
+        nmcli connection up id $env.WORK_VPN | complete
+    }
 }
 
 # def --env go_obsidian [] {
@@ -573,6 +577,14 @@ def pythonenv [] {
     $env.PROMPT_PREFIX = "(venv) "
     nu
   '
+}
+
+def --env serverlog [] {
+    ssh $env.PIHOLEUSER -t "tail -f ~/logs/objectserver.log"
+}
+
+def pythonenv_new [version: string = "python3.11", dir?: path = "./venv"] {
+    virtualenv --python $"($version)" $"($dir)"
 }
 
 source ~/.zoxide.nu
