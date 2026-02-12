@@ -100,14 +100,14 @@ def pull_everything [] {
 }
 
 def set-path [] {
-    if ($hostname | str contains $env.WINDOWS.NAME) {
-        $env.WINDOWS.PATHS
-    } else if ($hostname | str contains $env.MAC.NAME) {
+    if ($hostname | str contains $env.MAC.NAME) {
         $env.MAC.PATHS
     } else if ($hostname | str contains $env.SINA.NAME) {
         $env.SINA.PATHS
     } else if ($hostname | str contains $env.TUXEDO.NAME) {
-        $env.TUXEDO.PATHS
+        $env.LINUX.PATHS
+    } else if ($hostname | str contains $env.BAZZITE.NAME) {
+        $env.LINUX.PATHS
     }
 }
 
