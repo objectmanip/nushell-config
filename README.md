@@ -1,8 +1,9 @@
 # Requirments:
-## Linux
 ```bash
 sudo apt install wl-clipboard virtualenv
 ```
-## Windows
+# Changes
 
-## MacOS
+| Date | Change |
+| ---  | ---    |
+| 2026-02-16 | Removed "git add --all" from gitpush |

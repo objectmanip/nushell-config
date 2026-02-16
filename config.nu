@@ -236,7 +236,7 @@ def --env gitpush [remote: string = "origin", branch: string = "default", commen
         }
     }
 
-    git add --all
+    # git add --all
     git commit -m $comment
     print-info-git $"Commit: ($comment)"
     # do -i { git diff --cached --quiet }
