@@ -11,7 +11,6 @@ $env.use_ansi_coloring = false
 $env.use_kitty_protocol = false
 
 print-system "Nushell active"
-let hostname = (sys host).hostname
 let hostsystem = (sys host).long_os_version
 let paths = (set-path)
 let use_short_path_prompt = true
@@ -99,17 +98,17 @@ def pull_everything [] {
 }
 
 def set-path [] {
-    if ($env.hostname | str contains $env.MAC.NAME) {
+    if ($env.HOSTNAME | str contains $env.MAC.NAME) {
         $env.MAC.PATHS
-    } else if ($env.hostname | str contains $env.SINA.NAME) {
+    } else if ($env.HOSTNAME | str contains $env.SINA.NAME) {
         $env.SINA.PATHS,
-    } else if ($env.hostname | str contains $env.TUXEDO.NAME) {
+    } else if ($env.HOSTNAME | str contains $env.TUXEDO.NAME) {
         $env.LINUX.PATHS
-    } else if ($env.hostname | str contains $env.BAZZITE.NAME) {
-        print-info $"Setting paths for ($hostname)"
+    } else if ($env.HOSTNAME | str contains $env.BAZZITE.NAME) {
+        print-info $"Setting paths for ($env.HOSTNAME)"
         $env.LINUX.PATHS
     } else {
-        print-info $"Defaulting to linux paths for unknown host ($hostname)"
+        print-info $"Defaulting to linux paths for unknown host ($env.HOSTNAME)"
         $env.LINUX.PATHS
     }
 }
