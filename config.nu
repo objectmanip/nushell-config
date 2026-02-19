@@ -555,13 +555,13 @@ def --env ll [] {
 }
 
 
-def --env n [dir?: path] {
-    if $dir != null {
-        if ($dir | path type) == dir {
-            cd $dir
+def --env n [FileOrDir?: path] {
+    if $FileOrDir != null {
+        if ($FileOrDir | path type) == dir {
+            cd $FileOrDir
             ll
-        } else if ($dir | path type) == file {
-            cat $dir
+        } else if ($FileOrDir | path type) == file {
+            nvim $FileOrDir
         }
     } else {
         ll
