@@ -235,7 +235,7 @@ def --env gitpush [remote: string = "origin", branch: string = "default", commen
         }
     }
 
-    # git add --all
+    git add --all
     git commit -m $comment
     print-info-git $"Commit: ($comment)"
     # do -i { git diff --cached --quiet }
@@ -509,9 +509,51 @@ def --env dotpull [] {
     }
 }
 
+# def --env ll [] {
+#     ls -al | reject num_links inode created group
+# }
+
 def --env ll [] {
-    ls -al | reject num_links inode created group
+    let files = ls -al | reject num_links inode created group
+
+    let in_git_repo = (do { git rev-parse --is-inside-work-tree } | complete | get exit_code) == 0
+
+    if not $in_git_repo {
+        return $files
+    }
+
+    let git_status = (
+        git status --porcelain
+        | lines
+        | each {|line|
+            let xy = $line | str substring 0..1
+            let name = $line | str substring 3.. | str trim | path basename
+
+            let status = match $xy {
+                "M " | "MM" => "modified",
+                " M" => "modified",
+                "A " => "added",
+                " A" => "added",
+                "D " | " D" => "deleted",
+                "R " => "renamed",
+                "??" => "untracked",
+                "!!" => "ignored",
+                _ => $xy
+            }
+            {name: $name, git_status: $status}
+        }
+    )
+
+    $files | insert git_status {|row|
+        let matches = $git_status | where name == $row.name
+        if ($matches | is-empty) {
+            ""
+        } else {
+            $matches | get 0 | get git_status
+        }
+    }
 }
+
 
 def --env n [dir?: path] {
     if $dir != null {
