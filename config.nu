@@ -15,7 +15,7 @@ let hostsystem = (sys host).long_os_version
 let paths = (set-path)
 let use_short_path_prompt = true
 let in_python_venv = false
-let default_git_push_string = "<no commit messaeg> (nu)"
+let default_git_push_string = "<no commit message> (nu)"
 let default_git_push_increment_string = $default_git_push_string ++ " [skip ci]"
 let default_git_merge_string = "auto-merged (nu) [skip ci]"
 
